@@ -29,15 +29,15 @@ The solution came with multi-layer perceptrons (MLPs) and the backpropagation al
 ```
     INPUT           HIDDEN LAYER          OUTPUT
    LAYER
-                    ┌─────────┐
-                 ┌──┤ Neuron 1├──┐
-    ┌───┐       │  │  z1, a1  │  │       ┌─────────┐
+                   ┌─────────┐
+                ┌──┤ Neuron 1├──┐
+    ┌───┐       │  │  z1, a1 │  │       ┌─────────┐
     │x1 │───────┤  └─────────┘  ├───────┤ Output  │
     └───┘       │               │       │ z_out   │────► a_out
                 │               │       │ a_out   │
     ┌───┐       │  ┌─────────┐  │       └─────────┘
-    │x2 │───────┤  │ Neuron 2├──┤
-    └───┘       └──┤  z2, a2  │──┘
+    │x2 │───────┤  │ Neuron 2├──┘
+    └───┘       └──┤  z2, a2 │
                    └─────────┘
 ```
 
