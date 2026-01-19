@@ -1,6 +1,6 @@
 # Neural Network from Scratch: XOR
 
-A neural network built without libraries to deeply understand forward propagation, backpropagation, and gradient descent.
+A neural network built without libraries to deeply understand forward propagation, backpropagation, and learn how equations solve problems.
 
 ---
 
@@ -42,287 +42,303 @@ The solution came with multi-layer perceptrons (MLPs) and the backpropagation al
 ```
 
 **Structure:**
-- **Input Layer:** 2 neurons (x1, x2)
+- **Input Layer:** 2 neurons (x₁, x₂)
 - **Hidden Layer:** 2 neurons with sigmoid activation
 - **Output Layer:** 1 neuron with sigmoid activation
 
-**Parameters (weights and biases):**
-- Hidden Neuron 1: `w1_n1`, `w2_n1`, `b_n1`
-- Hidden Neuron 2: `w1_n2`, `w2_n2`, `b_n2`
-- Output Neuron: `w1_out`, `w2_out`, `b_out`
-
-Total: 9 learnable parameters
+**Parameters (9 total):**
+- Hidden Neuron 1: w₁₁, w₁₂, b₁
+- Hidden Neuron 2: w₂₁, w₂₂, b₂
+- Output Neuron: wₒ₁, wₒ₂, bₒᵤₜ
 
 ---
 
 ## The Sigmoid Function
 
-The sigmoid (σ) squashes any input to a value between 0 and 1:
-
+**Equation:**
 ```
-σ(x) = 1 / (1 + e^(-x))
+σ(x) = 1 / (1 + e⁻ˣ)
 ```
 
-**Why sigmoid?**
-- Output is bounded (0, 1) — interpretable as probability
-- Differentiable everywhere — required for gradient descent
-- Non-linear — allows learning complex patterns
-
-**Key property for backpropagation:**
+**Derivative (used in backpropagation):**
 ```
 σ'(x) = σ(x) · (1 - σ(x))
 ```
 
-This elegant derivative makes calculations simple: if you already have `a = σ(z)`, then the derivative is just `a · (1 - a)`.
+**Why sigmoid?**
+- Outputs bounded between (0, 1)
+- Differentiable everywhere
+- Non-linear — allows learning complex patterns
 
 ---
 
-## Forward Pass
+## FORWARD PASS
 
 The forward pass computes the network's prediction given inputs.
 
-### Step 1: Hidden Layer
+---
 
-**Neuron 1 — Weighted Sum:**
-```
-z1 = x1·w1_n1 + x2·w2_n1 + b_n1
-```
+### Hidden Neuron 1
 
-**Neuron 1 — Activation:**
+**Equation:**
 ```
-a1 = σ(z1) = 1 / (1 + e^(-z1))
-```
+z₁ = w₁₁ · x₁ + w₁₂ · x₂ + b₁
 
-**Neuron 2 — Weighted Sum:**
-```
-z2 = x1·w1_n2 + x2·w2_n2 + b_n2
+a₁ = σ(z₁) = 1 / (1 + e⁻ᶻ¹)
 ```
 
-**Neuron 2 — Activation:**
+**Calculation:** (x₁=1, x₂=0, weights=0.5, bias=0)
 ```
-a2 = σ(z2) = 1 / (1 + e^(-z2))
-```
+z₁ = 0.5 · 1 + 0.5 · 0 + 0 = 0.5
 
-### Step 2: Output Layer
-
-**Weighted Sum:**
-```
-z_out = a1·w1_out + a2·w2_out + b_out
+a₁ = 1 / (1 + e⁻⁰·⁵) = 1 / 1.606 = 0.6225
 ```
 
-**Activation (Final Prediction):**
+**Code:**
+```python
+z_n1 = w1_n1 * x1 + w2_n1 * x2 + b_n1
+a_n1 = sigmoid(z_n1)
 ```
-a_out = σ(z_out) = 1 / (1 + e^(-z_out))
-```
-
-### Example Calculation
-
-Given: `x1 = 1`, `x2 = 0`, all weights = 0.5, all biases = 0
-
-```
-z1 = 1·0.5 + 0·0.5 + 0 = 0.5
-a1 = 1 / (1 + e^(-0.5)) = 1 / 1.606 = 0.6225
-
-z2 = 1·0.5 + 0·0.5 + 0 = 0.5
-a2 = 0.6225
-
-z_out = 0.6225·0.5 + 0.6225·0.5 + 0 = 0.6225
-a_out = 1 / (1 + e^(-0.6225)) = 0.6508
-```
-
-Prediction: **0.6508** (Expected: 1 for XOR(1,0))
 
 ---
 
-## Loss Function
+### Hidden Neuron 2
 
-We need a way to measure how wrong our prediction is. We use Mean Squared Error (MSE):
-
+**Equation:**
 ```
-L = (a_out - y)²
+z₂ = w₂₁ · x₁ + w₂₂ · x₂ + b₂
+
+a₂ = σ(z₂) = 1 / (1 + e⁻ᶻ²)
 ```
 
-Where:
-- `a_out` = network's prediction
-- `y` = actual target value
-
-### Example
-
+**Calculation:**
 ```
-a_out = 0.6508
-y = 1 (target for XOR(1,0))
+z₂ = 0.5 · 1 + 0.5 · 0 + 0 = 0.5
 
+a₂ = 1 / (1 + e⁻⁰·⁵) = 0.6225
+```
+
+**Code:**
+```python
+z_n2 = w1_n2 * x1 + w2_n2 * x2 + b_n2
+a_n2 = sigmoid(z_n2)
+```
+
+---
+
+### Output Neuron
+
+**Equation:**
+```
+zₒᵤₜ = wₒ₁ · a₁ + wₒ₂ · a₂ + bₒᵤₜ
+
+aₒᵤₜ = σ(zₒᵤₜ) = 1 / (1 + e⁻ᶻᵒᵘᵗ)
+```
+
+**Calculation:**
+```
+zₒᵤₜ = 0.5 · 0.6225 + 0.5 · 0.6225 + 0 = 0.6225
+
+aₒᵤₜ = 1 / (1 + e⁻⁰·⁶²²⁵) = 0.6508
+```
+
+**Code:**
+```python
+z_out = w1_out * a_n1 + w2_out * a_n2 + b_out
+a_out = sigmoid(z_out)
+```
+
+---
+
+## LOSS FUNCTION
+
+**Equation:**
+```
+L = (aₒᵤₜ - y)²
+```
+
+**Calculation:** (target y=1 for XOR(1,0))
+```
 L = (0.6508 - 1)² = (-0.3492)² = 0.1220
 ```
 
-The goal of training: **minimize this loss**.
-
----
-
-## Backward Pass (Backpropagation)
-
-Backpropagation answers: "How much does each weight contribute to the error?"
-
-We use the **chain rule** to propagate the error backward through the network, computing gradients (partial derivatives) for each weight.
-
-### The Chain Rule
-
-If `y = f(g(x))`, then:
-```
-dy/dx = dy/dg · dg/dx
-```
-
-This lets us break complex derivatives into simpler pieces.
-
----
-
-### Step 1: Output Layer Gradient (δ_out)
-
-We want: `∂L/∂z_out` — how does changing z_out affect the loss?
-
-**Apply chain rule:**
-```
-∂L/∂z_out = ∂L/∂a_out · ∂a_out/∂z_out
-```
-
-**Compute each part:**
-
-```
-∂L/∂a_out = ∂/∂a_out[(a_out - y)²] = 2(a_out - y)
-```
-
-```
-∂a_out/∂z_out = σ'(z_out) = a_out · (1 - a_out)
-```
-
-**Combine:**
-```
-δ_out = 2(a_out - y) · a_out · (1 - a_out)
-```
-
-### Example Calculation
-
-```
-a_out = 0.6508, y = 1
-
-∂L/∂a_out = 2(0.6508 - 1) = 2(-0.3492) = -0.6984
-
-∂a_out/∂z_out = 0.6508 · (1 - 0.6508) = 0.6508 · 0.3492 = 0.2273
-
-δ_out = -0.6984 · 0.2273 = -0.1587
+**Code:**
+```python
+loss = (a_out - y) ** 2
 ```
 
 ---
 
-### Step 2: Hidden Layer Gradients (δ1, δ2)
+## BACKWARD PASS (Backpropagation)
 
-Now we propagate the error back to the hidden layer.
+The goal: find how each weight affects the loss using the chain rule, then adjust weights to minimize loss.
 
-**For hidden neuron 1:**
-```
-∂L/∂z1 = ∂L/∂z_out · ∂z_out/∂a1 · ∂a1/∂z1
-```
+---
 
-Breaking it down:
-- `∂L/∂z_out = δ_out` (computed above)
-- `∂z_out/∂a1 = w1_out` (from z_out = a1·w1_out + ...)
-- `∂a1/∂z1 = a1 · (1 - a1)` (sigmoid derivative)
+### Output Neuron Delta
 
-**Combine:**
+**Equation:**
 ```
-δ1 = δ_out · w1_out · a1 · (1 - a1)
-```
+δₒᵤₜ = ∂L/∂aₒᵤₜ · ∂aₒᵤₜ/∂zₒᵤₜ
 
-**For hidden neuron 2:**
-```
-δ2 = δ_out · w2_out · a2 · (1 - a2)
+∂L/∂aₒᵤₜ = 2(aₒᵤₜ - y)
+
+∂aₒᵤₜ/∂zₒᵤₜ = aₒᵤₜ(1 - aₒᵤₜ)
+
+δₒᵤₜ = 2(aₒᵤₜ - y) · aₒᵤₜ(1 - aₒᵤₜ)
 ```
 
-### Example Calculation
-
+**Calculation:**
 ```
-δ_out = -0.1587, w1_out = 0.5, a1 = 0.6225
+∂L/∂aₒᵤₜ = 2(0.6508 - 1) = -0.6984
 
-δ1 = -0.1587 · 0.5 · 0.6225 · (1 - 0.6225)
+∂aₒᵤₜ/∂zₒᵤₜ = 0.6508 · (1 - 0.6508) = 0.6508 · 0.3492 = 0.2273
+
+δₒᵤₜ = -0.6984 · 0.2273 = -0.1587
+```
+
+**Code:**
+```python
+delta_out = 2 * (a_out - y) * a_out * (1 - a_out)
+```
+
+---
+
+### Neuron 1 Delta
+
+**Equation:**
+```
+δ₁ = ∂L/∂zₒᵤₜ · ∂zₒᵤₜ/∂a₁ · ∂a₁/∂z₁
+
+δ₁ = δₒᵤₜ · wₒ₁ · a₁(1 - a₁)
+```
+
+**Calculation:**
+```
+δ₁ = -0.1587 · 0.5 · 0.6225 · (1 - 0.6225)
    = -0.1587 · 0.5 · 0.6225 · 0.3775
    = -0.0187
 ```
 
----
-
-### Step 3: Weight Gradients
-
-Now we compute how much each individual weight affects the loss.
-
-**Output layer weights:**
-```
-∂L/∂w1_out = δ_out · a1
-∂L/∂w2_out = δ_out · a2
-∂L/∂b_out  = δ_out
-```
-
-**Hidden layer weights:**
-```
-∂L/∂w1_n1 = δ1 · x1
-∂L/∂w2_n1 = δ1 · x2
-∂L/∂b_n1  = δ1
-
-∂L/∂w1_n2 = δ2 · x1
-∂L/∂w2_n2 = δ2 · x2
-∂L/∂b_n2  = δ2
+**Code:**
+```python
+delta_n1 = delta_out * w1_out * a_n1 * (1 - a_n1)
 ```
 
 ---
 
-## Gradient Descent (Weight Updates)
+### Neuron 2 Delta
 
-Once we have the gradients, we update weights to reduce the loss:
-
+**Equation:**
 ```
-w_new = w_old - η · ∂L/∂w
-```
-
-Where `η` (eta) is the **learning rate** — a small number controlling step size.
-
-**Output layer updates:**
-```
-w1_out = w1_out - η · δ_out · a1
-w2_out = w2_out - η · δ_out · a2
-b_out  = b_out  - η · δ_out
+δ₂ = δₒᵤₜ · wₒ₂ · a₂(1 - a₂)
 ```
 
-**Hidden layer updates:**
+**Calculation:**
 ```
-w1_n1 = w1_n1 - η · δ1 · x1
-w2_n1 = w2_n1 - η · δ1 · x2
-b_n1  = b_n1  - η · δ1
-
-w1_n2 = w1_n2 - η · δ2 · x1
-w2_n2 = w2_n2 - η · δ2 · x2
-b_n2  = b_n2  - η · δ2
+δ₂ = -0.1587 · 0.5 · 0.6225 · 0.3775 = -0.0187
 ```
 
-### Example Calculation
-
+**Code:**
+```python
+delta_n2 = delta_out * w2_out * a_n2 * (1 - a_n2)
 ```
-η = 0.5, δ_out = -0.1587, a1 = 0.6225
-
-w1_out_new = 0.5 - 0.5 · (-0.1587) · 0.6225
-           = 0.5 - (-0.0494)
-           = 0.5494
-```
-
-The weight increased because the gradient was negative (we were undershooting).
 
 ---
 
-## Training Loop
+## UPDATE WEIGHTS
+
+**General equation:**
+```
+wₙₑᵥ = wₒₗₐ - η · δ · input
+```
+
+Where η (eta) is the learning rate.
+
+---
+
+### Output Neuron Weights
+
+**Equations:**
+```
+wₒ₁ = wₒ₁ - η · δₒᵤₜ · a₁
+wₒ₂ = wₒ₂ - η · δₒᵤₜ · a₂
+bₒᵤₜ = bₒᵤₜ - η · δₒᵤₜ
+```
+
+**Calculation:** (η = 0.5)
+```
+wₒ₁ = 0.5 - 0.5 · (-0.1587) · 0.6225 = 0.5 + 0.0494 = 0.5494
+wₒ₂ = 0.5 - 0.5 · (-0.1587) · 0.6225 = 0.5494
+bₒᵤₜ = 0 - 0.5 · (-0.1587) = 0.0794
+```
+
+**Code:**
+```python
+w1_out = w1_out - learning_rate * delta_out * a_n1
+w2_out = w2_out - learning_rate * delta_out * a_n2
+b_out = b_out - learning_rate * delta_out
+```
+
+---
+
+### Neuron 1 Weights
+
+**Equations:**
+```
+w₁₁ = w₁₁ - η · δ₁ · x₁
+w₁₂ = w₁₂ - η · δ₁ · x₂
+b₁ = b₁ - η · δ₁
+```
+
+**Calculation:** (x₁=1, x₂=0)
+```
+w₁₁ = 0.5 - 0.5 · (-0.0187) · 1 = 0.5 + 0.0093 = 0.5093
+w₁₂ = 0.5 - 0.5 · (-0.0187) · 0 = 0.5
+b₁ = 0 - 0.5 · (-0.0187) = 0.0093
+```
+
+**Code:**
+```python
+w1_n1 = w1_n1 - learning_rate * delta_n1 * x1
+w2_n1 = w2_n1 - learning_rate * delta_n1 * x2
+b_n1 = b_n1 - learning_rate * delta_n1
+```
+
+---
+
+### Neuron 2 Weights
+
+**Equations:**
+```
+w₂₁ = w₂₁ - η · δ₂ · x₁
+w₂₂ = w₂₂ - η · δ₂ · x₂
+b₂ = b₂ - η · δ₂
+```
+
+**Calculation:**
+```
+w₂₁ = 0.5 - 0.5 · (-0.0187) · 1 = 0.5093
+w₂₂ = 0.5 - 0.5 · (-0.0187) · 0 = 0.5
+b₂ = 0 - 0.5 · (-0.0187) = 0.0093
+```
+
+**Code:**
+```python
+w1_n2 = w1_n2 - learning_rate * delta_n2 * x1
+w2_n2 = w2_n2 - learning_rate * delta_n2 * x2
+b_n2 = b_n2 - learning_rate * delta_n2
+```
+
+---
+
+## TRAINING LOOP
 
 Repeat for many epochs:
-1. **Forward pass:** Compute prediction
-2. **Compute loss:** How wrong are we?
-3. **Backward pass:** Compute gradients
-4. **Update weights:** Move toward lower loss
+1. Forward pass — compute prediction
+2. Compute loss — measure error
+3. Backward pass — compute gradients
+4. Update weights — reduce error
 
 ```python
 for epoch in range(epochs):
@@ -342,50 +358,53 @@ for epoch in range(epochs):
 
         # Update weights
         w1_out -= learning_rate * delta_out * a1
-        # ... (all other weights)
+        w2_out -= learning_rate * delta_out * a2
+        b_out -= learning_rate * delta_out
+
+        w1_n1 -= learning_rate * delta_z1 * x1
+        w2_n1 -= learning_rate * delta_z1 * x2
+        b_n1 -= learning_rate * delta_z1
+
+        w1_n2 -= learning_rate * delta_z2 * x1
+        w2_n2 -= learning_rate * delta_z2 * x2
+        b_n2 -= learning_rate * delta_z2
 ```
 
 ---
 
-## Lessons Learned
+## LESSONS LEARNED
 
 ### 1. Symmetry Breaking
 
-**Problem:** Initialized all weights to the same value (0.5).
+**Mistake:** Initialized all weights to the same value (0.5).
 
-**What happened:** Both hidden neurons computed identical outputs and received identical gradient updates. They stayed identical forever—effectively collapsing into one neuron. A single hidden neuron cannot solve XOR.
+**What happened:** Both hidden neurons computed identical outputs and received identical gradient updates. They stayed identical forever—effectively acting as one neuron. One neuron cannot solve XOR.
 
-**Solution:** Initialize weights randomly. Each neuron starts different and learns different features.
+**Fix:** Initialize weights randomly between -1 and 1. Seed the random generator for reproducibility.
 
 ---
 
 ### 2. Learning Rate
 
-**Problem:** Started with `learning_rate = 0.5` (too high).
+**Mistake:** Started with learning_rate = 0.5 (too high).
 
-**What happened:** The network overshot the optimal weights and oscillated around the minimum instead of converging.
+**What happened:** The network overshot the optimal weights and oscillated instead of converging.
 
-**Solution:** Start small (Andrew Ng recommends 0.01). If learning is too slow, gradually increase. If loss oscillates or explodes, decrease.
-
-```
-Too high: overshoots the minimum
-Too low:  takes forever to converge
-Just right: smooth decrease in loss
-```
+**Fix:** Start small (Andrew Ng recommends 0.01). Increase if learning is too slow. Decrease if loss oscillates.
 
 ---
 
 ### 3. Epochs
 
-**Problem:** Assumed more epochs always means better results.
+**Mistake:** Assumed more epochs = better results.
 
-**What happened:** After the loss plateaued, additional training was wasted computation. In some cases, too many epochs can lead to overfitting or numerical instability.
+**What happened:** After loss plateaued, additional training was wasted computation.
 
-**Solution:** Monitor the loss during training. Stop when it stops decreasing significantly (early stopping).
+**Fix:** Monitor the loss. Stop when it stops decreasing.
 
 ---
 
-## Run the Code
+## Run
 
 ```bash
 python Neural_Network.py
@@ -398,13 +417,3 @@ Input: (0, 1) | Expected: 1 | Predicted: 1
 Input: (1, 0) | Expected: 1 | Predicted: 1
 Input: (1, 1) | Expected: 0 | Predicted: 0
 ```
-
----
-
-## Key Takeaways
-
-1. **Forward pass** computes predictions layer by layer
-2. **Loss function** measures prediction error
-3. **Backpropagation** uses the chain rule to find how each weight affects loss
-4. **Gradient descent** updates weights to minimize loss
-5. **Hyperparameters** (learning rate, epochs) require tuning—there's no universal correct value
