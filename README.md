@@ -56,14 +56,12 @@ The solution came with multi-layer perceptrons (MLPs) and the backpropagation al
 ## The Sigmoid Function
 
 **Equation:**
-```
-σ(x) = 1 / (1 + e⁻ˣ)
-```
+
+$$\sigma(x) = \frac{1}{1 + e^{-x}}$$
 
 **Derivative (used in backpropagation):**
-```
-σ'(x) = σ(x) · (1 - σ(x))
-```
+
+$$\sigma'(x) = \sigma(x) \cdot (1 - \sigma(x))$$
 
 **Why sigmoid?**
 - Outputs bounded between (0, 1)
@@ -81,18 +79,16 @@ The forward pass computes the network's prediction given inputs.
 ### Hidden Neuron 1
 
 **Equation:**
-```
-z₁ = w₁₁ · x₁ + w₁₂ · x₂ + b₁
 
-a₁ = σ(z₁) = 1 / (1 + e⁻ᶻ¹)
-```
+$$z_1 = w_{11} \cdot x_1 + w_{12} \cdot x_2 + b_1$$
+
+$$a_1 = \sigma(z_1) = \frac{1}{1 + e^{-z_1}}$$
 
 **Calculation:** (x₁=1, x₂=0, weights=0.5, bias=0)
-```
-z₁ = 0.5 · 1 + 0.5 · 0 + 0 = 0.5
 
-a₁ = 1 / (1 + e⁻⁰·⁵) = 1 / 1.606 = 0.6225
-```
+$$z_1 = 0.5 \cdot 1 + 0.5 \cdot 0 + 0 = 0.5$$
+
+$$a_1 = \frac{1}{1 + e^{-0.5}} = \frac{1}{1.606} = 0.6225$$
 
 **Code:**
 ```python
@@ -105,18 +101,16 @@ a_n1 = sigmoid(z_n1)
 ### Hidden Neuron 2
 
 **Equation:**
-```
-z₂ = w₂₁ · x₁ + w₂₂ · x₂ + b₂
 
-a₂ = σ(z₂) = 1 / (1 + e⁻ᶻ²)
-```
+$$z_2 = w_{21} \cdot x_1 + w_{22} \cdot x_2 + b_2$$
+
+$$a_2 = \sigma(z_2) = \frac{1}{1 + e^{-z_2}}$$
 
 **Calculation:**
-```
-z₂ = 0.5 · 1 + 0.5 · 0 + 0 = 0.5
 
-a₂ = 1 / (1 + e⁻⁰·⁵) = 0.6225
-```
+$$z_2 = 0.5 \cdot 1 + 0.5 \cdot 0 + 0 = 0.5$$
+
+$$a_2 = \frac{1}{1 + e^{-0.5}} = 0.6225$$
 
 **Code:**
 ```python
@@ -129,18 +123,16 @@ a_n2 = sigmoid(z_n2)
 ### Output Neuron
 
 **Equation:**
-```
-zₒᵤₜ = wₒ₁ · a₁ + wₒ₂ · a₂ + bₒᵤₜ
 
-aₒᵤₜ = σ(zₒᵤₜ) = 1 / (1 + e⁻ᶻᵒᵘᵗ)
-```
+$$z_{out} = w_{o1} \cdot a_1 + w_{o2} \cdot a_2 + b_{out}$$
+
+$$a_{out} = \sigma(z_{out}) = \frac{1}{1 + e^{-z_{out}}}$$
 
 **Calculation:**
-```
-zₒᵤₜ = 0.5 · 0.6225 + 0.5 · 0.6225 + 0 = 0.6225
 
-aₒᵤₜ = 1 / (1 + e⁻⁰·⁶²²⁵) = 0.6508
-```
+$$z_{out} = 0.5 \cdot 0.6225 + 0.5 \cdot 0.6225 + 0 = 0.6225$$
+
+$$a_{out} = \frac{1}{1 + e^{-0.6225}} = 0.6508$$
 
 **Code:**
 ```python
@@ -153,14 +145,12 @@ a_out = sigmoid(z_out)
 ## LOSS FUNCTION
 
 **Equation:**
-```
-L = (aₒᵤₜ - y)²
-```
+
+$$L = (a_{out} - y)^2$$
 
 **Calculation:** (target y=1 for XOR(1,0))
-```
-L = (0.6508 - 1)² = (-0.3492)² = 0.1220
-```
+
+$$L = (0.6508 - 1)^2 = (-0.3492)^2 = 0.1220$$
 
 **Code:**
 ```python
@@ -178,24 +168,26 @@ The goal: find how each weight affects the loss using the chain rule, then adjus
 ### Output Neuron Delta
 
 **Equation:**
-```
-δₒᵤₜ = ∂L/∂aₒᵤₜ · ∂aₒᵤₜ/∂zₒᵤₜ
 
-∂L/∂aₒᵤₜ = 2(aₒᵤₜ - y)
+$$\delta_{out} = \frac{\partial L}{\partial a_{out}} \cdot \frac{\partial a_{out}}{\partial z_{out}}$$
 
-∂aₒᵤₜ/∂zₒᵤₜ = aₒᵤₜ(1 - aₒᵤₜ)
+Where:
 
-δₒᵤₜ = 2(aₒᵤₜ - y) · aₒᵤₜ(1 - aₒᵤₜ)
-```
+$$\frac{\partial L}{\partial a_{out}} = \frac{\partial}{\partial a_{out}}(a_{out} - y)^2 = 2(a_{out} - y)$$
+
+$$\frac{\partial a_{out}}{\partial z_{out}} = \sigma'(z_{out}) = a_{out}(1 - a_{out})$$
+
+Therefore:
+
+$$\delta_{out} = 2(a_{out} - y) \cdot a_{out}(1 - a_{out})$$
 
 **Calculation:**
-```
-∂L/∂aₒᵤₜ = 2(0.6508 - 1) = -0.6984
 
-∂aₒᵤₜ/∂zₒᵤₜ = 0.6508 · (1 - 0.6508) = 0.6508 · 0.3492 = 0.2273
+$$\frac{\partial L}{\partial a_{out}} = 2(0.6508 - 1) = 2(-0.3492) = -0.6984$$
 
-δₒᵤₜ = -0.6984 · 0.2273 = -0.1587
-```
+$$\frac{\partial a_{out}}{\partial z_{out}} = 0.6508 \cdot (1 - 0.6508) = 0.6508 \cdot 0.3492 = 0.2273$$
+
+$$\delta_{out} = -0.6984 \cdot 0.2273 = -0.1587$$
 
 **Code:**
 ```python
@@ -207,18 +199,25 @@ delta_out = 2 * (a_out - y) * a_out * (1 - a_out)
 ### Neuron 1 Delta
 
 **Equation:**
-```
-δ₁ = ∂L/∂zₒᵤₜ · ∂zₒᵤₜ/∂a₁ · ∂a₁/∂z₁
 
-δ₁ = δₒᵤₜ · wₒ₁ · a₁(1 - a₁)
-```
+$$\frac{\partial L}{\partial z_1} = \frac{\partial L}{\partial z_{out}} \cdot \frac{\partial z_{out}}{\partial a_1} \cdot \frac{\partial a_1}{\partial z_1}$$
+
+Where:
+- $\frac{\partial L}{\partial z_{out}} = \delta_{out}$
+- $\frac{\partial z_{out}}{\partial a_1} = w_{o1}$
+- $\frac{\partial a_1}{\partial z_1} = a_1(1 - a_1)$
+
+Therefore:
+
+$$\delta_1 = \delta_{out} \cdot w_{o1} \cdot a_1(1 - a_1)$$
 
 **Calculation:**
-```
-δ₁ = -0.1587 · 0.5 · 0.6225 · (1 - 0.6225)
-   = -0.1587 · 0.5 · 0.6225 · 0.3775
-   = -0.0187
-```
+
+$$\delta_1 = -0.1587 \cdot 0.5 \cdot 0.6225 \cdot (1 - 0.6225)$$
+
+$$\delta_1 = -0.1587 \cdot 0.5 \cdot 0.6225 \cdot 0.3775$$
+
+$$\delta_1 = -0.0187$$
 
 **Code:**
 ```python
@@ -230,14 +229,12 @@ delta_n1 = delta_out * w1_out * a_n1 * (1 - a_n1)
 ### Neuron 2 Delta
 
 **Equation:**
-```
-δ₂ = δₒᵤₜ · wₒ₂ · a₂(1 - a₂)
-```
+
+$$\delta_2 = \delta_{out} \cdot w_{o2} \cdot a_2(1 - a_2)$$
 
 **Calculation:**
-```
-δ₂ = -0.1587 · 0.5 · 0.6225 · 0.3775 = -0.0187
-```
+
+$$\delta_2 = -0.1587 \cdot 0.5 \cdot 0.6225 \cdot 0.3775 = -0.0187$$
 
 **Code:**
 ```python
@@ -246,32 +243,37 @@ delta_n2 = delta_out * w2_out * a_n2 * (1 - a_n2)
 
 ---
 
-## UPDATE WEIGHTS
+## UPDATE WEIGHTS (Gradient Descent)
 
 **General equation:**
-```
-wₙₑᵥ = wₒₗₐ - η · δ · input
-```
 
-Where η (eta) is the learning rate.
+$$w_{new} = w_{old} - \eta \cdot \frac{\partial L}{\partial w}$$
+
+Where $\eta$ (eta) is the learning rate.
+
+For our network, this becomes:
+
+$$w_{new} = w_{old} - \eta \cdot \delta \cdot input$$
 
 ---
 
 ### Output Neuron Weights
 
 **Equations:**
-```
-wₒ₁ = wₒ₁ - η · δₒᵤₜ · a₁
-wₒ₂ = wₒ₂ - η · δₒᵤₜ · a₂
-bₒᵤₜ = bₒᵤₜ - η · δₒᵤₜ
-```
 
-**Calculation:** (η = 0.5)
-```
-wₒ₁ = 0.5 - 0.5 · (-0.1587) · 0.6225 = 0.5 + 0.0494 = 0.5494
-wₒ₂ = 0.5 - 0.5 · (-0.1587) · 0.6225 = 0.5494
-bₒᵤₜ = 0 - 0.5 · (-0.1587) = 0.0794
-```
+$$w_{o1} = w_{o1} - \eta \cdot \delta_{out} \cdot a_1$$
+
+$$w_{o2} = w_{o2} - \eta \cdot \delta_{out} \cdot a_2$$
+
+$$b_{out} = b_{out} - \eta \cdot \delta_{out}$$
+
+**Calculation:** ($\eta$ = 0.5)
+
+$$w_{o1} = 0.5 - 0.5 \cdot (-0.1587) \cdot 0.6225 = 0.5 + 0.0494 = 0.5494$$
+
+$$w_{o2} = 0.5 - 0.5 \cdot (-0.1587) \cdot 0.6225 = 0.5494$$
+
+$$b_{out} = 0 - 0.5 \cdot (-0.1587) = 0.0794$$
 
 **Code:**
 ```python
@@ -285,18 +287,20 @@ b_out = b_out - learning_rate * delta_out
 ### Neuron 1 Weights
 
 **Equations:**
-```
-w₁₁ = w₁₁ - η · δ₁ · x₁
-w₁₂ = w₁₂ - η · δ₁ · x₂
-b₁ = b₁ - η · δ₁
-```
+
+$$w_{11} = w_{11} - \eta \cdot \delta_1 \cdot x_1$$
+
+$$w_{12} = w_{12} - \eta \cdot \delta_1 \cdot x_2$$
+
+$$b_1 = b_1 - \eta \cdot \delta_1$$
 
 **Calculation:** (x₁=1, x₂=0)
-```
-w₁₁ = 0.5 - 0.5 · (-0.0187) · 1 = 0.5 + 0.0093 = 0.5093
-w₁₂ = 0.5 - 0.5 · (-0.0187) · 0 = 0.5
-b₁ = 0 - 0.5 · (-0.0187) = 0.0093
-```
+
+$$w_{11} = 0.5 - 0.5 \cdot (-0.0187) \cdot 1 = 0.5 + 0.0093 = 0.5093$$
+
+$$w_{12} = 0.5 - 0.5 \cdot (-0.0187) \cdot 0 = 0.5$$
+
+$$b_1 = 0 - 0.5 \cdot (-0.0187) = 0.0093$$
 
 **Code:**
 ```python
@@ -310,18 +314,20 @@ b_n1 = b_n1 - learning_rate * delta_n1
 ### Neuron 2 Weights
 
 **Equations:**
-```
-w₂₁ = w₂₁ - η · δ₂ · x₁
-w₂₂ = w₂₂ - η · δ₂ · x₂
-b₂ = b₂ - η · δ₂
-```
+
+$$w_{21} = w_{21} - \eta \cdot \delta_2 \cdot x_1$$
+
+$$w_{22} = w_{22} - \eta \cdot \delta_2 \cdot x_2$$
+
+$$b_2 = b_2 - \eta \cdot \delta_2$$
 
 **Calculation:**
-```
-w₂₁ = 0.5 - 0.5 · (-0.0187) · 1 = 0.5093
-w₂₂ = 0.5 - 0.5 · (-0.0187) · 0 = 0.5
-b₂ = 0 - 0.5 · (-0.0187) = 0.0093
-```
+
+$$w_{21} = 0.5 - 0.5 \cdot (-0.0187) \cdot 1 = 0.5093$$
+
+$$w_{22} = 0.5 - 0.5 \cdot (-0.0187) \cdot 0 = 0.5$$
+
+$$b_2 = 0 - 0.5 \cdot (-0.0187) = 0.0093$$
 
 **Code:**
 ```python
