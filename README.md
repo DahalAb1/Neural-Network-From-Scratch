@@ -338,46 +338,6 @@ b_n2 = b_n2 - learning_rate * delta_n2
 
 ---
 
-## TRAINING LOOP
-
-Repeat for many epochs:
-1. Forward pass — compute prediction
-2. Compute loss — measure error
-3. Backward pass — compute gradients
-4. Update weights — reduce error
-
-```python
-for epoch in range(epochs):
-    for x1, x2, y in training_data:
-        # Forward pass
-        z1 = x1*w1_n1 + x2*w2_n1 + b_n1
-        a1 = sigmoid(z1)
-        z2 = x1*w1_n2 + x2*w2_n2 + b_n2
-        a2 = sigmoid(z2)
-        z_out = a1*w1_out + a2*w2_out + b_out
-        a_out = sigmoid(z_out)
-
-        # Backward pass
-        delta_out = a_out*(1-a_out)*2*(a_out-y)
-        delta_z1 = delta_out*a1*(1-a1)*w1_out
-        delta_z2 = delta_out*a2*(1-a2)*w2_out
-
-        # Update weights
-        w1_out -= learning_rate * delta_out * a1
-        w2_out -= learning_rate * delta_out * a2
-        b_out -= learning_rate * delta_out
-
-        w1_n1 -= learning_rate * delta_z1 * x1
-        w2_n1 -= learning_rate * delta_z1 * x2
-        b_n1 -= learning_rate * delta_z1
-
-        w1_n2 -= learning_rate * delta_z2 * x1
-        w2_n2 -= learning_rate * delta_z2 * x2
-        b_n2 -= learning_rate * delta_z2
-```
-
----
-
 ## LESSONS LEARNED
 
 ### 1. Symmetry Breaking
