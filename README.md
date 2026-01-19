@@ -1,7 +1,6 @@
 # Neural Network from Scratch: XOR
 
-A neural network built without libraries to deeply understand forward propagation, backpropagation, and learn how equations solve problems.
-
+I set out to create a basic Neural Network from scratch. Learning [Gradient Descent](https://github.com/DahalAb1/Gradient-Descent) was fun, and it aided the process of learning the black box everyone was talking about. I wanted to simplify neural networks and put together all the pieces I've collected—this project is the result. 
 ---
 
 ## Why XOR?
