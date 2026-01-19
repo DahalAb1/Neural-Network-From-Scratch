@@ -1,6 +1,7 @@
 # Neural Network from Scratch: XOR
 
-I set out to create a basic Neural Network from scratch. Learning [Gradient Descent](https://github.com/DahalAb1/Gradient-Descent) was fun, and it aided the process of learning the black box everyone was talking about. I wanted to simplify neural networks for anyone starting out and I've put together all the pieces I've  collected to aid their journey. 
+I set out to create a basic Neural Network from scratch. Learning [Gradient Descent](https://github.com/DahalAb1/Gradient-Descent) was fun, and it aided the process of learning the black box everyone was talking about. I wanted to simplify neural networks for anyone starting out and I've put together all the pieces I've collected to aid their journey.
+
 ---
 
 ## Why XOR?
